@@ -20,7 +20,7 @@ function buildPrompt(hoje) {
   return `Hoje é ${hoje}. Você monitora preços de itens de bebê no BRASIL para um pai cuja filha nasce em março de 2027.
 A Black Friday brasileira de 2026 é em 27/11/2026.
 
-Para cada item abaixo, pesquise na web o MENOR preço atual de produto NOVO vendido para o Brasil (lojas nacionais, Mercado Livre, Amazon.com.br, lojas especializadas; lojas que enviam do exterior só se o preço já incluir impostos). Ignore usados e anúncios sem preço.
+Para cada item abaixo, pesquise na web o MENOR preço atual de produto NOVO vendido para o Brasil (lojas nacionais, Mercado Livre, Amazon.com.br, lojas especializadas; lojas que enviam do exterior só se o preço já incluir impostos). Ignore usados e anúncios sem preço. Seja econômico: no máximo 8 buscas no total, priorizando buscas que cubram vários itens de uma vez (ex.: uma loja que venda Thule e Maxi-Cosi).
 
 ${lista}
 
@@ -43,10 +43,10 @@ async function askClaude(prompt) {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: process.env.CLAUDE_MODEL || "claude-sonnet-5-5",
-        max_tokens: 8000,
+        model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
+        max_tokens: 4000,
         messages,
-        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 20, user_location: { type: "approximate", country: "BR", city: "São Paulo" } }],
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 8, user_location: { type: "approximate", country: "BR", city: "São Paulo" } }],
       }),
     });
     if (!r.ok) throw new Error(`Anthropic ${r.status}: ${await r.text()}`);
@@ -113,4 +113,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: String(e.message || e) });
   }
 }
-
